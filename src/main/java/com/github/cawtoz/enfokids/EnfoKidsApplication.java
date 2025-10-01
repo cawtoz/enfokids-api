@@ -1,13 +1,13 @@
-package com.github.cawtoz.enfokids_api;
+package com.github.cawtoz.enfokids;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class EnfokidsApiApplication {
+public class EnfoKidsApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EnfokidsApiApplication.class, args);
+		SpringApplication.run(EnfoKidsApplication.class, args);
 	}
 
 }
