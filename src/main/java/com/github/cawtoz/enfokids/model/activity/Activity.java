@@ -29,9 +29,9 @@ public class Activity {
     @Column(length = 30, nullable = false)
     private ActivityTypeEnum type;
 
-    private String image_url;
+    private String imageUrl;
 
-    private String resource_url;
+    private String resourceUrl;
 
 }
 
