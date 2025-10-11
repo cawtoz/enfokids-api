@@ -1,5 +1,6 @@
 package com.github.cawtoz.enfokids.generic;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +29,14 @@ public abstract class GenericController<
     }
 
     @PostMapping
-    public ResponseEntity<RESPONSE> create(@RequestBody REQUEST request) {
+    public ResponseEntity<RESPONSE> create(@Valid @RequestBody REQUEST request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(service.create(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RESPONSE> update(@PathVariable ID id, @RequestBody REQUEST request) {
+    public ResponseEntity<RESPONSE> update(@PathVariable ID id, @Valid @RequestBody REQUEST request) {
         return service.update(id, request)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
