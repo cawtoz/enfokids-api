@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.cawtoz.enfokids.dto.request.UserRequest;
 import com.github.cawtoz.enfokids.dto.response.UserResponse;
+import com.github.cawtoz.enfokids.exception.ResourceNotFoundException;
 import com.github.cawtoz.enfokids.generic.GenericService;
 import com.github.cawtoz.enfokids.mapper.UserMapper;
 import com.github.cawtoz.enfokids.model.role.Role;
@@ -13,8 +14,10 @@ import com.github.cawtoz.enfokids.repository.RoleRepository;
 import com.github.cawtoz.enfokids.repository.UserRepository;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService extends GenericService<User, Long, UserRequest, UserResponse, UserMapper> {
@@ -51,9 +54,22 @@ public class UserService extends GenericService<User, Long, UserRequest, UserRes
     public void setRolesFromIds(User user, Set<Long> roleIds) {
         if (roleIds != null && !roleIds.isEmpty()) {
             Set<Role> roles = new HashSet<>();
-            for (Long roleId : roleIds) {
-                roleRepository.findById(roleId).ifPresent(roles::add);
+
+            List<Long> notFoundRoleIds = roleIds.stream()
+                    .filter(roleId -> {
+                        Optional<Role> roleOpt = roleRepository.findById(roleId);
+                        if (roleOpt.isPresent()) {
+                            roles.add(roleOpt.get());
+                            return false;
+                        }
+                        return true;
+                    })
+                    .collect(Collectors.toList());
+            
+            if (!notFoundRoleIds.isEmpty()) {
+                throw new ResourceNotFoundException("Roles no encontrados con IDs: " + notFoundRoleIds);
             }
+            
             user.setRoles(roles);
         }
     }
