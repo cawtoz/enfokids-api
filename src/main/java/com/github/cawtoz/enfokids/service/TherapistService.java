@@ -1,26 +1,39 @@
 package com.github.cawtoz.enfokids.service;
 
-import com.github.cawtoz.enfokids.generic.GenericService;
-import com.github.cawtoz.enfokids.model.role.RoleEnum;
-import com.github.cawtoz.enfokids.model.user.types.Therapist;
-import com.github.cawtoz.enfokids.repository.RoleRepository;
-
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.github.cawtoz.enfokids.dto.request.TherapistRequest;
+import com.github.cawtoz.enfokids.dto.response.TherapistResponse;
+import com.github.cawtoz.enfokids.generic.GenericService;
+import com.github.cawtoz.enfokids.mapper.TherapistMapper;
+import com.github.cawtoz.enfokids.model.role.RoleEnum;
+import com.github.cawtoz.enfokids.model.user.types.Therapist;
+
+import java.util.Optional;
+
 @Service
-public class TherapistService extends GenericService<Therapist, Long> {
+public class TherapistService extends GenericService<Therapist, Long, TherapistRequest, TherapistResponse, TherapistMapper> {
 
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleService roleService;
 
     @Override
-    public Therapist save(Therapist therapist) {
-        roleRepository.findByName(RoleEnum.THERAPIST)
-            .ifPresent(role -> therapist.setRoles(Set.of(role)));
-        return super.save(therapist);
+    public TherapistResponse create(TherapistRequest request) {
+        Therapist therapist = mapper.toEntity(request);
+        roleService.assignRoleToUser(therapist, RoleEnum.THERAPIST);
+        Therapist saved = repository.save(therapist);
+        return mapper.toResponse(saved);
+    }
+    
+    @Override
+    public Optional<TherapistResponse> update(Long id, TherapistRequest request) {
+        return repository.findById(id)
+                .map(existing -> {
+                    mapper.updateEntityFromRequest(request, existing);
+                    Therapist updated = repository.save(existing);
+                    return mapper.toResponse(updated);
+                });
     }
 
 }

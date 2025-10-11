@@ -1,11 +1,49 @@
 package com.github.cawtoz.enfokids.service;
 
-import com.github.cawtoz.enfokids.generic.GenericService;
-import com.github.cawtoz.enfokids.model.activity.PlanDetail;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.github.cawtoz.enfokids.dto.request.PlanDetailRequest;
+import com.github.cawtoz.enfokids.dto.response.PlanDetailResponse;
+import com.github.cawtoz.enfokids.generic.GenericService;
+import com.github.cawtoz.enfokids.mapper.PlanDetailMapper;
+import com.github.cawtoz.enfokids.model.activity.PlanDetail;
+import com.github.cawtoz.enfokids.repository.ActivityPlanRepository;
+import com.github.cawtoz.enfokids.repository.ActivityRepository;
+
+import java.util.Optional;
+
 @Service
-public class PlanDetailService extends GenericService<PlanDetail, Long> {
+public class PlanDetailService extends GenericService<PlanDetail, Long, PlanDetailRequest, PlanDetailResponse, PlanDetailMapper> {
+    
+    @Autowired
+    private ActivityPlanRepository activityPlanRepository;
+    
+    @Autowired
+    private ActivityRepository activityRepository;
+    
+    @Override
+    public PlanDetailResponse create(PlanDetailRequest request) {
+        PlanDetail planDetail = mapper.toEntity(request);
+        setRelationsFromIds(planDetail, request.getPlanId(), request.getActivityId());
+        PlanDetail saved = repository.save(planDetail);
+        return mapper.toResponse(saved);
+    }
+    
+    @Override
+    public Optional<PlanDetailResponse> update(Long id, PlanDetailRequest request) {
+        return repository.findById(id)
+                .map(existing -> {
+                    mapper.updateEntityFromRequest(request, existing);
+                    setRelationsFromIds(existing, request.getPlanId(), request.getActivityId());
+                    PlanDetail updated = repository.save(existing);
+                    return mapper.toResponse(updated);
+                });
+    }
+    
+    private void setRelationsFromIds(PlanDetail planDetail, Long planId, Long activityId) {
+        if (planId != null) activityPlanRepository.findById(planId).ifPresent(planDetail::setPlan);
+        if (activityId != null) activityRepository.findById(activityId).ifPresent(planDetail::setActivity);
+    }
     
 }
