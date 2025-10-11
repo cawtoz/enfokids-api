@@ -8,25 +8,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 public abstract class GenericController<
-    T, ID, REQUEST, RESPONSE,
-    MAPPER extends GenericMapper<T, REQUEST, RESPONSE>
+    ID, REQUEST, RESPONSE,
+    SERVICE extends GenericService<?, ID, REQUEST, RESPONSE, ?>
 > {
 
     @Autowired
-    protected GenericService<T, ID> service;
-
-    @Autowired
-    protected MAPPER mapper;
+    protected SERVICE service;
 
     @GetMapping
     public ResponseEntity<List<RESPONSE>> getAll() {
-        return ResponseEntity.ok(mapper.toResponseSet(service.findAll()));
+        return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RESPONSE> getById(@PathVariable ID id) {
         return service.findById(id)
-                .map(entity -> ResponseEntity.ok(mapper.toResponse(entity)))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -34,18 +31,13 @@ public abstract class GenericController<
     public ResponseEntity<RESPONSE> create(@RequestBody REQUEST request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(mapper.toResponse(service.save(mapper.toEntity(request))));
+                .body(service.create(request));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RESPONSE> update(@PathVariable ID id, @RequestBody REQUEST request) {
-        return service.findById(id)
-                .map(existingEntity -> {
-                    mapper.updateEntityFromRequest(request, existingEntity);
-                    T updatedEntity = service.save(existingEntity);
-                    RESPONSE response = mapper.toResponse(updatedEntity);
-                    return ResponseEntity.ok(response);
-                })
+        return service.update(id, request)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
