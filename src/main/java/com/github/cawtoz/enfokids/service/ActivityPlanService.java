@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.cawtoz.enfokids.dto.request.ActivityPlanRequest;
 import com.github.cawtoz.enfokids.dto.response.ActivityPlanResponse;
+import com.github.cawtoz.enfokids.exception.ResourceNotFoundException;
 import com.github.cawtoz.enfokids.generic.GenericService;
 import com.github.cawtoz.enfokids.mapper.ActivityPlanMapper;
 import com.github.cawtoz.enfokids.model.activity.ActivityPlan;
@@ -38,7 +39,12 @@ public class ActivityPlanService extends GenericService<ActivityPlan, Long, Acti
     }
     
     private void setTherapistFromId(ActivityPlan activityPlan, Long therapistId) {
-        if (therapistId != null) therapistRepository.findById(therapistId).ifPresent(activityPlan::setTherapist);
+        if (therapistId != null) {
+            activityPlan.setTherapist(
+                therapistRepository.findById(therapistId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Terapeuta", "id", therapistId))
+            );
+        }
     }
     
 }

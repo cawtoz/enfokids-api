@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.cawtoz.enfokids.dto.request.ProgressRequest;
 import com.github.cawtoz.enfokids.dto.response.ProgressResponse;
+import com.github.cawtoz.enfokids.exception.ResourceNotFoundException;
 import com.github.cawtoz.enfokids.generic.GenericService;
 import com.github.cawtoz.enfokids.mapper.ProgressMapper;
 import com.github.cawtoz.enfokids.model.activity.Progress;
@@ -38,7 +39,12 @@ public class ProgressService extends GenericService<Progress, Long, ProgressRequ
     }
     
     private void setAssignmentFromId(Progress progress, Long assignmentId) {
-        if (assignmentId != null) assignmentRepository.findById(assignmentId).ifPresent(progress::setAssignment);
+        if (assignmentId != null) {
+            progress.setAssignment(
+                assignmentRepository.findById(assignmentId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Asignación", "id", assignmentId))
+            );
+        }
     }
 
 }

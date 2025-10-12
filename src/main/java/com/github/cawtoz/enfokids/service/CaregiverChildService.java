@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.cawtoz.enfokids.dto.request.CaregiverChildRequest;
 import com.github.cawtoz.enfokids.dto.response.CaregiverChildResponse;
+import com.github.cawtoz.enfokids.exception.ResourceNotFoundException;
 import com.github.cawtoz.enfokids.generic.GenericService;
 import com.github.cawtoz.enfokids.mapper.CaregiverChildMapper;
 import com.github.cawtoz.enfokids.model.relation.CaregiverChild;
@@ -42,8 +43,18 @@ public class CaregiverChildService extends GenericService<CaregiverChild, Long, 
     }
     
     private void setRelationsFromIds(CaregiverChild caregiverChild, Long caregiverId, Long childId) {
-        if (caregiverId != null) caregiverRepository.findById(caregiverId).ifPresent(caregiverChild::setCaregiver);
-        if (childId != null) childRepository.findById(childId).ifPresent(caregiverChild::setChild);
+        if (caregiverId != null) {
+            caregiverChild.setCaregiver(
+                caregiverRepository.findById(caregiverId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Cuidador", "id", caregiverId))
+            );
+        }
+        if (childId != null) {
+            caregiverChild.setChild(
+                childRepository.findById(childId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Niño", "id", childId))
+            );
+        }
     }
     
 }

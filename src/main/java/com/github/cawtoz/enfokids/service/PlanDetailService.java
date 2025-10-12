@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.cawtoz.enfokids.dto.request.PlanDetailRequest;
 import com.github.cawtoz.enfokids.dto.response.PlanDetailResponse;
+import com.github.cawtoz.enfokids.exception.ResourceNotFoundException;
 import com.github.cawtoz.enfokids.generic.GenericService;
 import com.github.cawtoz.enfokids.mapper.PlanDetailMapper;
 import com.github.cawtoz.enfokids.model.activity.PlanDetail;
@@ -42,8 +43,18 @@ public class PlanDetailService extends GenericService<PlanDetail, Long, PlanDeta
     }
     
     private void setRelationsFromIds(PlanDetail planDetail, Long planId, Long activityId) {
-        if (planId != null) activityPlanRepository.findById(planId).ifPresent(planDetail::setPlan);
-        if (activityId != null) activityRepository.findById(activityId).ifPresent(planDetail::setActivity);
+        if (planId != null) {
+            planDetail.setPlan(
+                activityPlanRepository.findById(planId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Plan de actividad", "id", planId))
+            );
+        }
+        if (activityId != null) {
+            planDetail.setActivity(
+                activityRepository.findById(activityId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Actividad", "id", activityId))
+            );
+        }
     }
     
 }

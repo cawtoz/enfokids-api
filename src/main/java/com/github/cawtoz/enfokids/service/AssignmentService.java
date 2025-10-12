@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.cawtoz.enfokids.dto.request.AssignmentRequest;
 import com.github.cawtoz.enfokids.dto.response.AssignmentResponse;
+import com.github.cawtoz.enfokids.exception.ResourceNotFoundException;
 import com.github.cawtoz.enfokids.generic.GenericService;
 import com.github.cawtoz.enfokids.mapper.AssignmentMapper;
 import com.github.cawtoz.enfokids.model.activity.Assignment;
@@ -46,9 +47,24 @@ public class AssignmentService extends GenericService<Assignment, Long, Assignme
     }
     
     private void setRelationsFromIds(Assignment assignment, Long therapistId, Long childId, Long activityId) {
-        if (therapistId != null) therapistRepository.findById(therapistId).ifPresent(assignment::setTherapist);
-        if (childId != null) childRepository.findById(childId).ifPresent(assignment::setChild);
-        if (activityId != null) activityRepository.findById(activityId).ifPresent(assignment::setActivity);
+        if (therapistId != null) {
+            assignment.setTherapist(
+                therapistRepository.findById(therapistId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Terapeuta", "id", therapistId))
+            );
+        }
+        if (childId != null) {
+            assignment.setChild(
+                childRepository.findById(childId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Niño", "id", childId))
+            );
+        }
+        if (activityId != null) {
+            assignment.setActivity(
+                activityRepository.findById(activityId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Actividad", "id", activityId))
+            );
+        }
     }
     
 }
