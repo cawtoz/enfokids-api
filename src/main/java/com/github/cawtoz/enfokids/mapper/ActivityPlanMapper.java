@@ -19,10 +19,12 @@ public interface ActivityPlanMapper extends GenericMapper<ActivityPlan, Activity
     @Override
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "therapist", ignore = true)
+    @Mapping(target = "details", ignore = true)
     ActivityPlan toEntity(ActivityPlanRequest request);
     
     @Override
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "therapist", ignore = true)
+    @Mapping(target = "details", ignore = true)
     void updateEntityFromRequest(ActivityPlanRequest request, @MappingTarget ActivityPlan entity);
 }

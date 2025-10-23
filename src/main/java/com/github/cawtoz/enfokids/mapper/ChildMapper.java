@@ -8,20 +8,25 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring", uses = UserMapper.class)
+@Mapper(componentModel = "spring", uses = {UserMapper.class, TherapistMapper.class})
 public interface ChildMapper extends GenericMapper<Child, ChildRequest, ChildResponse> {
     
     @Override
     @Mapping(target = "roles", source = "roles", qualifiedByName = "rolesToRoleEnums")
+    @Mapping(target = "therapist", source = "therapist")
     ChildResponse toResponse(Child entity);
 
     @Override
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "therapist", ignore = true)
+    @Mapping(target = "caregiverChildren", ignore = true)
     Child toEntity(ChildRequest request);
     
     @Override
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "therapist", ignore = true)
+    @Mapping(target = "caregiverChildren", ignore = true)
     void updateEntityFromRequest(ChildRequest request, @MappingTarget Child entity);
 }

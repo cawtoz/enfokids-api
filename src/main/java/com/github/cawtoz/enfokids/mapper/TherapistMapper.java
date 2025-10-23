@@ -18,10 +18,12 @@ public interface TherapistMapper extends GenericMapper<Therapist, TherapistReque
     @Override
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "children", ignore = true)
     Therapist toEntity(TherapistRequest request);
     
     @Override
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "children", ignore = true)
     void updateEntityFromRequest(TherapistRequest request, @MappingTarget Therapist entity);
 }
