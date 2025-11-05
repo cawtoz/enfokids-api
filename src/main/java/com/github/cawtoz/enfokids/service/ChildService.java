@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.cawtoz.enfokids.dto.request.ChildRequest;
+import com.github.cawtoz.enfokids.dto.request.ChildUpdateRequest;
 import com.github.cawtoz.enfokids.dto.response.ChildResponse;
 import com.github.cawtoz.enfokids.generic.GenericService;
 import com.github.cawtoz.enfokids.mapper.ChildMapper;
@@ -13,7 +14,7 @@ import com.github.cawtoz.enfokids.model.user.types.Child;
 import java.util.Optional;
 
 @Service
-public class ChildService extends GenericService<Child, Long, ChildRequest, ChildResponse, ChildMapper> {
+public class ChildService extends GenericService<Child, Long, ChildRequest, ChildUpdateRequest, ChildResponse, ChildMapper> {
 
     @Autowired
     private RoleService roleService;
@@ -27,10 +28,10 @@ public class ChildService extends GenericService<Child, Long, ChildRequest, Chil
     }
     
     @Override
-    public Optional<ChildResponse> update(Long id, ChildRequest request) {
+    public Optional<ChildResponse> update(Long id, ChildUpdateRequest request) {
         return repository.findById(id)
                 .map(existing -> {
-                    mapper.updateEntityFromRequest(request, existing);
+                    mapper.updateEntityFromUpdateRequest(request, existing);
                     Child updated = repository.save(existing);
                     return mapper.toResponse(updated);
                 });

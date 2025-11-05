@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.cawtoz.enfokids.dto.request.CaregiverChildRequest;
+import com.github.cawtoz.enfokids.dto.request.CaregiverChildUpdateRequest;
 import com.github.cawtoz.enfokids.dto.response.CaregiverChildResponse;
 import com.github.cawtoz.enfokids.exception.ResourceNotFoundException;
 import com.github.cawtoz.enfokids.generic.GenericService;
@@ -15,7 +16,7 @@ import com.github.cawtoz.enfokids.repository.ChildRepository;
 import java.util.Optional;
 
 @Service
-public class CaregiverChildService extends GenericService<CaregiverChild, Long, CaregiverChildRequest, CaregiverChildResponse, CaregiverChildMapper> {
+public class CaregiverChildService extends GenericService<CaregiverChild, Long, CaregiverChildRequest, CaregiverChildUpdateRequest, CaregiverChildResponse, CaregiverChildMapper> {
 
     @Autowired
     private CaregiverRepository caregiverRepository;
@@ -32,10 +33,10 @@ public class CaregiverChildService extends GenericService<CaregiverChild, Long, 
     }
     
     @Override
-    public Optional<CaregiverChildResponse> update(Long id, CaregiverChildRequest request) {
+    public Optional<CaregiverChildResponse> update(Long id, CaregiverChildUpdateRequest request) {
         return repository.findById(id)
                 .map(existing -> {
-                    mapper.updateEntityFromRequest(request, existing);
+                    mapper.updateEntityFromUpdateRequest(request, existing);
                     setRelationsFromIds(existing, request.getCaregiverId(), request.getChildId());
                     CaregiverChild updated = repository.save(existing);
                     return mapper.toResponse(updated);

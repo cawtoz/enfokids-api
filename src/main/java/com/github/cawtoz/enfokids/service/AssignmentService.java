@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.cawtoz.enfokids.dto.request.AssignmentRequest;
+import com.github.cawtoz.enfokids.dto.request.AssignmentUpdateRequest;
 import com.github.cawtoz.enfokids.dto.response.AssignmentResponse;
 import com.github.cawtoz.enfokids.exception.ResourceNotFoundException;
 import com.github.cawtoz.enfokids.generic.GenericService;
@@ -16,7 +17,7 @@ import com.github.cawtoz.enfokids.repository.TherapistRepository;
 import java.util.Optional;
 
 @Service
-public class AssignmentService extends GenericService<Assignment, Long, AssignmentRequest, AssignmentResponse, AssignmentMapper> {
+public class AssignmentService extends GenericService<Assignment, Long, AssignmentRequest, AssignmentUpdateRequest, AssignmentResponse, AssignmentMapper> {
 
     @Autowired
     private TherapistRepository therapistRepository;
@@ -36,10 +37,10 @@ public class AssignmentService extends GenericService<Assignment, Long, Assignme
     }
     
     @Override
-    public Optional<AssignmentResponse> update(Long id, AssignmentRequest request) {
+    public Optional<AssignmentResponse> update(Long id, AssignmentUpdateRequest request) {
         return repository.findById(id)
                 .map(existing -> {
-                    mapper.updateEntityFromRequest(request, existing);
+                    mapper.updateEntityFromUpdateRequest(request, existing);
                     setRelationsFromIds(existing, request.getTherapistId(), request.getChildId(), request.getActivityId());
                     Assignment updated = repository.save(existing);
                     return mapper.toResponse(updated);

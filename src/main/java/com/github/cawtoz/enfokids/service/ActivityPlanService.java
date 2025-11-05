@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.cawtoz.enfokids.dto.request.ActivityPlanRequest;
+import com.github.cawtoz.enfokids.dto.request.ActivityPlanUpdateRequest;
 import com.github.cawtoz.enfokids.dto.request.PlanDetailRequest;
 import com.github.cawtoz.enfokids.dto.response.ActivityPlanResponse;
 import com.github.cawtoz.enfokids.dto.response.PlanDetailResponse;
@@ -19,7 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class ActivityPlanService extends GenericService<ActivityPlan, Long, ActivityPlanRequest, ActivityPlanResponse, ActivityPlanMapper> {
+public class ActivityPlanService extends GenericService<ActivityPlan, Long, ActivityPlanRequest, ActivityPlanUpdateRequest, ActivityPlanResponse, ActivityPlanMapper> {
     
     @Autowired
     private TherapistRepository therapistRepository;
@@ -39,10 +40,10 @@ public class ActivityPlanService extends GenericService<ActivityPlan, Long, Acti
     }
     
     @Override
-    public Optional<ActivityPlanResponse> update(Long id, ActivityPlanRequest request) {
+    public Optional<ActivityPlanResponse> update(Long id, ActivityPlanUpdateRequest request) {
         return repository.findById(id)
                 .map(existing -> {
-                    mapper.updateEntityFromRequest(request, existing);
+                    mapper.updateEntityFromUpdateRequest(request, existing);
                     setTherapistFromId(existing, request.getTherapistId());
                     ActivityPlan updated = repository.save(existing);
                     return mapper.toResponse(updated);

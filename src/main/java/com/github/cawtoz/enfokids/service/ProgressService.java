@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.cawtoz.enfokids.dto.request.ProgressRequest;
+import com.github.cawtoz.enfokids.dto.request.ProgressUpdateRequest;
 import com.github.cawtoz.enfokids.dto.response.ProgressResponse;
 import com.github.cawtoz.enfokids.exception.ResourceNotFoundException;
 import com.github.cawtoz.enfokids.generic.GenericService;
@@ -14,7 +15,7 @@ import com.github.cawtoz.enfokids.repository.AssignmentRepository;
 import java.util.Optional;
 
 @Service
-public class ProgressService extends GenericService<Progress, Long, ProgressRequest, ProgressResponse, ProgressMapper> {
+public class ProgressService extends GenericService<Progress, Long, ProgressRequest, ProgressUpdateRequest, ProgressResponse, ProgressMapper> {
     
     @Autowired
     private AssignmentRepository assignmentRepository;
@@ -28,10 +29,10 @@ public class ProgressService extends GenericService<Progress, Long, ProgressRequ
     }
     
     @Override
-    public Optional<ProgressResponse> update(Long id, ProgressRequest request) {
+    public Optional<ProgressResponse> update(Long id, ProgressUpdateRequest request) {
         return repository.findById(id)
                 .map(existing -> {
-                    mapper.updateEntityFromRequest(request, existing);
+                    mapper.updateEntityFromUpdateRequest(request, existing);
                     setAssignmentFromId(existing, request.getAssignmentId());
                     Progress updated = repository.save(existing);
                     return mapper.toResponse(updated);

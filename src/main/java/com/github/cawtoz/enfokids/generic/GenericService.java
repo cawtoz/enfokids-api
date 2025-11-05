@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class GenericService<T, ID, REQUEST, RESPONSE, MAPPER extends GenericMapper<T, REQUEST, RESPONSE>> {
+public abstract class GenericService<T, ID, REQUEST, UPDATE_REQUEST, RESPONSE, MAPPER extends GenericMapper<T, REQUEST, UPDATE_REQUEST, RESPONSE>> {
 
     @Autowired
     protected JpaRepository<T, ID> repository;
@@ -27,11 +27,11 @@ public abstract class GenericService<T, ID, REQUEST, RESPONSE, MAPPER extends Ge
         T saved = repository.save(entity);
         return mapper.toResponse(saved);
     }
-    
-    public Optional<RESPONSE> update(ID id, REQUEST request) {
+
+    public Optional<RESPONSE> update(ID id, UPDATE_REQUEST request) {
         return repository.findById(id)
                 .map(existing -> {
-                    mapper.updateEntityFromRequest(request, existing);
+                    mapper.updateEntityFromUpdateRequest(request, existing);
                     T updated = repository.save(existing);
                     return mapper.toResponse(updated);
                 });

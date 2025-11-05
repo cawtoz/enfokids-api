@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.cawtoz.enfokids.dto.request.PlanDetailRequest;
+import com.github.cawtoz.enfokids.dto.request.PlanDetailUpdateRequest;
 import com.github.cawtoz.enfokids.dto.response.PlanDetailResponse;
 import com.github.cawtoz.enfokids.exception.ResourceNotFoundException;
 import com.github.cawtoz.enfokids.generic.GenericService;
@@ -15,7 +16,7 @@ import com.github.cawtoz.enfokids.repository.ActivityRepository;
 import java.util.Optional;
 
 @Service
-public class PlanDetailService extends GenericService<PlanDetail, Long, PlanDetailRequest, PlanDetailResponse, PlanDetailMapper> {
+public class PlanDetailService extends GenericService<PlanDetail, Long, PlanDetailRequest, PlanDetailUpdateRequest, PlanDetailResponse, PlanDetailMapper> {
     
     @Autowired
     private ActivityPlanRepository activityPlanRepository;
@@ -32,10 +33,10 @@ public class PlanDetailService extends GenericService<PlanDetail, Long, PlanDeta
     }
     
     @Override
-    public Optional<PlanDetailResponse> update(Long id, PlanDetailRequest request) {
+    public Optional<PlanDetailResponse> update(Long id, PlanDetailUpdateRequest request) {
         return repository.findById(id)
                 .map(existing -> {
-                    mapper.updateEntityFromRequest(request, existing);
+                    mapper.updateEntityFromUpdateRequest(request, existing);
                     setRelationsFromIds(existing, request.getPlanId(), request.getActivityId());
                     PlanDetail updated = repository.save(existing);
                     return mapper.toResponse(updated);

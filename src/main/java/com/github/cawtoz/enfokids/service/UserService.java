@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.cawtoz.enfokids.dto.request.UserRequest;
+import com.github.cawtoz.enfokids.dto.request.UserUpdateRequest;
 import com.github.cawtoz.enfokids.dto.response.UserResponse;
 import com.github.cawtoz.enfokids.exception.ResourceNotFoundException;
 import com.github.cawtoz.enfokids.generic.GenericService;
@@ -20,7 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService extends GenericService<User, Long, UserRequest, UserResponse, UserMapper> {
+public class UserService extends GenericService<User, Long, UserRequest, UserUpdateRequest, UserResponse, UserMapper> {
 
     @Autowired
     protected UserRepository repository;
@@ -41,10 +42,22 @@ public class UserService extends GenericService<User, Long, UserRequest, UserRes
     }
     
     @Override
-    public Optional<UserResponse> update(Long id, UserRequest request) {
+    public Optional<UserResponse> update(Long id, UserUpdateRequest request) {
         return repository.findById(id)
                 .map(existing -> {
-                    mapper.updateEntityFromRequest(request, existing);
+                    if (request.getUsername() != null && 
+                        !request.getUsername().equals(existing.getUsername()) &&
+                        repository.existsByUsername(request.getUsername())) {
+                        throw new IllegalArgumentException("username: El nombre de usuario ya existe");
+                    }
+                    
+                    if (request.getEmail() != null && 
+                        !request.getEmail().equals(existing.getEmail()) &&
+                        repository.existsByEmail(request.getEmail())) {
+                        throw new IllegalArgumentException("email: El email ya existe");
+                    }
+                    
+                    mapper.updateEntityFromUpdateRequest(request, existing);
                     setRolesFromIds(existing, request.getRoleIds());
                     User updated = repository.save(existing);
                     return mapper.toResponse(updated);
