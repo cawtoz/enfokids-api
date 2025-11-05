@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 public abstract class GenericController<
-    ID, REQUEST, RESPONSE,
-    SERVICE extends GenericService<?, ID, REQUEST, RESPONSE, ?>
+    ID, REQUEST, UPDATE_REQUEST, RESPONSE,
+    SERVICE extends GenericService<?, ID, REQUEST, UPDATE_REQUEST, RESPONSE, ?>
 > {
 
     @Autowired
@@ -36,7 +36,7 @@ public abstract class GenericController<
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RESPONSE> update(@PathVariable ID id, @Valid @RequestBody REQUEST request) {
+    public ResponseEntity<RESPONSE> update(@PathVariable ID id, @Valid @RequestBody UPDATE_REQUEST request) {
         return service.update(id, request)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

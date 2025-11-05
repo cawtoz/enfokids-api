@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.github.cawtoz.enfokids.dto.request.ActivityPlanRequest;
+import com.github.cawtoz.enfokids.dto.request.ActivityPlanUpdateRequest;
 import com.github.cawtoz.enfokids.dto.request.PlanDetailRequest;
 import com.github.cawtoz.enfokids.dto.response.ActivityPlanResponse;
 import com.github.cawtoz.enfokids.dto.response.PlanDetailResponse;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/activity-plans")
-public class ActivityPlanController extends GenericController<Long, ActivityPlanRequest, ActivityPlanResponse, ActivityPlanService> {
+public class ActivityPlanController extends GenericController<Long, ActivityPlanRequest, ActivityPlanUpdateRequest, ActivityPlanResponse, ActivityPlanService> {
     
     @PostMapping("/{planId}/activities")
     public ResponseEntity<PlanDetailResponse> addActivity(
