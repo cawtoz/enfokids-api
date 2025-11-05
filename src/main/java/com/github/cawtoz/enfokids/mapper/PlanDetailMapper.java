@@ -1,6 +1,7 @@
 package com.github.cawtoz.enfokids.mapper;
 
 import com.github.cawtoz.enfokids.dto.request.PlanDetailRequest;
+import com.github.cawtoz.enfokids.dto.request.PlanDetailUpdateRequest;
 import com.github.cawtoz.enfokids.dto.response.PlanDetailResponse;
 import com.github.cawtoz.enfokids.generic.GenericMapper;
 import com.github.cawtoz.enfokids.model.activity.PlanDetail;
@@ -9,7 +10,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
-public interface PlanDetailMapper extends GenericMapper<PlanDetail, PlanDetailRequest, PlanDetailResponse> {
+public interface PlanDetailMapper extends GenericMapper<PlanDetail, PlanDetailRequest, PlanDetailUpdateRequest, PlanDetailResponse> {
     
     @Override
     @Mapping(target = "planId", source = "plan.id")
@@ -29,4 +30,10 @@ public interface PlanDetailMapper extends GenericMapper<PlanDetail, PlanDetailRe
     @Mapping(target = "plan", ignore = true)
     @Mapping(target = "activity", ignore = true)
     void updateEntityFromRequest(PlanDetailRequest request, @MappingTarget PlanDetail entity);
+    
+    @Override
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "plan", ignore = true)
+    @Mapping(target = "activity", ignore = true)
+    void updateEntityFromUpdateRequest(PlanDetailUpdateRequest request, @MappingTarget PlanDetail entity);
 }

@@ -1,6 +1,7 @@
 ﻿package com.github.cawtoz.enfokids.mapper;
 
 import com.github.cawtoz.enfokids.dto.request.UserRequest;
+import com.github.cawtoz.enfokids.dto.request.UserUpdateRequest;
 import com.github.cawtoz.enfokids.dto.response.UserResponse;
 import com.github.cawtoz.enfokids.generic.GenericMapper;
 import com.github.cawtoz.enfokids.model.role.Role;
@@ -18,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
-public interface UserMapper extends GenericMapper<User, UserRequest, UserResponse> {
+public interface UserMapper extends GenericMapper<User, UserRequest, UserUpdateRequest, UserResponse> {
 
     @Override
     @Mapping(target = "roles", source = "roles", qualifiedByName = "rolesToRoleEnums")
@@ -39,6 +40,12 @@ public interface UserMapper extends GenericMapper<User, UserRequest, UserRespons
     @Mapping(target = "roles", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromRequest(UserRequest request, @MappingTarget User entity);
+    
+    @Override
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntityFromUpdateRequest(UserUpdateRequest request, @MappingTarget User entity);
     
     @Named("rolesToRoleEnums")
     default Set<RoleEnum> rolesToRoleEnums(Set<Role> roles) {
