@@ -7,4 +7,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class ChildResponse extends UserResponse {
     
+    private TherapistResponse therapist;
+    private String diagnosis;
+    
 }
