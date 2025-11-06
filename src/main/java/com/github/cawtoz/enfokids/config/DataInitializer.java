@@ -41,6 +41,7 @@ public class DataInitializer implements CommandLineRunner {
         createRoleIfNotFound(RoleEnum.USER);
 
         // Crear usuarios de prueba
+        createAdminIfNotFound();
         createTherapistIfNotFound();
         createCaregiverIfNotFound();
         createChildIfNotFound();
@@ -53,6 +54,23 @@ public class DataInitializer implements CommandLineRunner {
             r.setName(roleEnum);
             roleRepository.save(r);
         }
+    }
+
+    private void createAdminIfNotFound() {
+        String username = "admin";
+        if (userRepository.findByUsername(username).isPresent()) return;
+
+        User u = new User();
+        u.setUsername(username);
+        u.setPassword(passwordEncoder.encode("adminpass"));
+        u.setEmail("admin@example.com");
+        u.setFirstName("Admin");
+        u.setLastName("User");
+
+        Role role = roleRepository.findByName(RoleEnum.ADMIN).orElseThrow();
+        u.getRoles().add(role);
+
+        userRepository.save(u);
     }
 
     private void createTherapistIfNotFound() {
