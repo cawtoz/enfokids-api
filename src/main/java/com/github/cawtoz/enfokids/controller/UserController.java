@@ -1,6 +1,5 @@
 package com.github.cawtoz.enfokids.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,5 +23,5 @@ public class UserController extends GenericController<Long, UserRequest, UserUpd
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    
+
 }
