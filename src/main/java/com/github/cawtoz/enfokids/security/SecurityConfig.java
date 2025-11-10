@@ -7,6 +7,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.github.cawtoz.enfokids.model.role.Role;
+import com.github.cawtoz.enfokids.model.role.RoleEnum;
+
 import java.util.List;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -26,7 +29,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
         HttpSecurity http,
-        JwtAuthFilter jwtAuthFilter
+        JwtAuthFilter jwtAuthFilter,
+        AuthenticationEntryPoint authenticationEntryPoint,
+        AccessDeniedHandler accessDeniedHandler
     ) throws Exception {
         return http
             .csrf(AbstractHttpConfigurer::disable)
@@ -34,8 +39,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .requestMatchers("/docs/**", "/docs.html", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().hasRole(RoleEnum.ADMIN.name())
             )
+            .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint).accessDeniedHandler(accessDeniedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
