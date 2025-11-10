@@ -7,7 +7,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.github.cawtoz.enfokids.model.role.Role;
 import com.github.cawtoz.enfokids.model.role.RoleEnum;
 
 import java.util.List;
