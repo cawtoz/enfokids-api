@@ -62,7 +62,7 @@ public class TherapistService extends GenericService<Therapist, Long, TherapistR
     
     public List<ChildResponse> getMyChildren() {
 
-        User currentUser = authService.getCurrentUser();
+        User currentUser = authService.getCurrentUserEntity();
 
         if (!currentUser.isTherapist()) {
             throw new ForbiddenException("Solo los terapeutas pueden acceder a sus propios niños");

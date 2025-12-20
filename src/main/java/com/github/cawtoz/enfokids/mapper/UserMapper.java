@@ -1,5 +1,4 @@
-﻿package com.github.cawtoz.enfokids.mapper;
-
+package com.github.cawtoz.enfokids.mapper;
 import com.github.cawtoz.enfokids.dto.request.UserRequest;
 import com.github.cawtoz.enfokids.dto.request.UserUpdateRequest;
 import com.github.cawtoz.enfokids.dto.response.UserResponse;
@@ -40,7 +39,7 @@ public interface UserMapper extends GenericMapper<User, UserRequest, UserUpdateR
     @Mapping(target = "roles", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromRequest(UserRequest request, @MappingTarget User entity);
-    
+
     @Override
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "roles", ignore = true)
