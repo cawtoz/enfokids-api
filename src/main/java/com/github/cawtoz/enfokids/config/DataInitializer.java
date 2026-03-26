@@ -9,6 +9,7 @@ import com.github.cawtoz.enfokids.model.user.User;
 import com.github.cawtoz.enfokids.repository.RoleRepository;
 import com.github.cawtoz.enfokids.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,9 +51,13 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private TherapistRepository therapistRepository;
 
+    @Value("${app.data.init:false}")
+    private boolean dataInitEnabled;
+
     @Override
     @Transactional
     public void run(String... args) {
+        if (!dataInitEnabled) return;
         // Crear roles si no existen
         createRoleIfNotFound(RoleEnum.ADMIN);
         createRoleIfNotFound(RoleEnum.THERAPIST);
