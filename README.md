@@ -232,11 +232,15 @@ Documentacion interactiva disponible en `/docs.html` (Swagger UI).
 Crea un archivo `.env` en la raiz basandote en `.env.example`:
 
 ```env
-DATABASE_URL=jdbc:postgresql://localhost:5432/enfokids
-DATABASE_USERNAME=postgres
-DATABASE_PASSWORD=tu_password
-JWT_SECRET_KEY=tu_clave_secreta_base64
-JWT_EXPIRATION_TIME=86400000
-```
+# Database Configuration
+DATABASE_URL=jdbc:postgresql://localhost:5432/yourdatabase
+DATABASE_USERNAME=your-username
+DATABASE_PASSWORD=your-password
 
-> La aplicacion usa `spring.jpa.hibernate.ddl-auto=create-drop`, por lo que **recrea la BD en cada arranque**. Util para desarrollo, cambiar en produccion.
+# Hibernate Configuration
+HIBERNATE_DDL_AUTO=create
+
+# JWT Configuration
+JWT_SECRET_KEY=your-super-secret-key-at-least-256-bits-long
+JWT_EXPIRATION_TIME=3600000
+```
