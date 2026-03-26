@@ -39,7 +39,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
                 .requestMatchers("/docs/**", "/docs.html", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                .anyRequest().hasRole(RoleEnum.ADMIN.name())
+                .anyRequest().permitAll()
+
             )
             .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint).accessDeniedHandler(accessDeniedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

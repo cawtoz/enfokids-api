@@ -13,8 +13,12 @@ import com.github.cawtoz.enfokids.model.activity.Assignment;
 import com.github.cawtoz.enfokids.repository.ActivityRepository;
 import com.github.cawtoz.enfokids.repository.ChildRepository;
 import com.github.cawtoz.enfokids.repository.TherapistRepository;
+import com.github.cawtoz.enfokids.repository.AssignmentRepository;
+import com.github.cawtoz.enfokids.model.activity.enums.AssignmentStatusEnum;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AssignmentService extends GenericService<Assignment, Long, AssignmentRequest, AssignmentUpdateRequest, AssignmentResponse, AssignmentMapper> {
@@ -28,6 +32,9 @@ public class AssignmentService extends GenericService<Assignment, Long, Assignme
     @Autowired
     private ActivityRepository activityRepository;
     
+    @Autowired
+    private AssignmentRepository assignmentRepository;
+
     @Override
     public AssignmentResponse create(AssignmentRequest request) {
         Assignment assignment = mapper.toEntity(request);
@@ -68,4 +75,36 @@ public class AssignmentService extends GenericService<Assignment, Long, Assignme
         }
     }
     
+    // Nuevo: obtener asignaciones por childId
+    public List<AssignmentResponse> findByChildId(Long childId) {
+        List<Assignment> list = assignmentRepository.findByChildId(childId);
+        return list.stream().map(mapper::toResponse).collect(Collectors.toList());
+    }
+
+    // Nuevo: obtener asignaciones por estado
+    public List<AssignmentResponse> findByStatus(AssignmentStatusEnum status) {
+        List<Assignment> list = assignmentRepository.findByStatus(status);
+        return list.stream().map(mapper::toResponse).collect(Collectors.toList());
+    }
+
+    // Nuevo: obtener asignaciones por childId y estado
+    public List<AssignmentResponse> findByChildIdAndStatus(Long childId, AssignmentStatusEnum status) {
+        List<Assignment> list = assignmentRepository.findByChildIdAndStatus(childId, status);
+        return list.stream().map(mapper::toResponse).collect(Collectors.toList());
+    }
+
+    // Conveniencia: decide según parámetros opcionales
+    public List<AssignmentResponse> findByOptionalFilters(Long childId, AssignmentStatusEnum status) {
+        if (childId != null && status != null) {
+            return findByChildIdAndStatus(childId, status);
+        }
+        if (childId != null) {
+            return findByChildId(childId);
+        }
+        if (status != null) {
+            return findByStatus(status);
+        }
+        return findAll();
+    }
+
 }
